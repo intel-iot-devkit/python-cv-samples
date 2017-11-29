@@ -15,10 +15,9 @@
 
 ## Setup
 1. Download the vtest.avi video from https://github.com/opencv/opencv/blob/master/samples/data/vtest.avi and put it in the same folder as the python script.
-2. 
+2. Run the python script.  You should see a diff-overlay.jpg when it's done.
 
-Original image:
-[](/images/gauge-1.jpg)
+![](images/diff-overlay.jpg)
 
 ## Get the Code
 The application can be downloaded as a .zip at the end of this article.
