@@ -99,63 +99,18 @@ def calibrate_gauge(gauge_number, file_type):
 
     #get user input on min, max, values, and units
     print 'gauge number: %s' %gauge_number
-    # min_angle = raw_input('Min angle (lowest possible angle of dial) - in degrees: ') #the lowest possible angle
-    # max_angle = raw_input('Max angle (highest possible angle) - in degrees: ') #highest possible angle
-    # min_value = raw_input('Min value: ') #usually zero
-    # max_value = raw_input('Max value: ') #maximum reading of the gauge
-    # units = raw_input('Enter units: ')
-
-    #gauge 1
-    min_angle = '40'
-    max_angle = '310'
-    min_value = '20'
-    max_value = '60'
-    units = 'deg C'
-
-    #gauge 10
-    # min_angle = '220'
-    # max_angle = '320'
-    # min_value = '0'
-    # max_value = '30'
-    # units = 'Hg'
-
-    #gauge 3
-    # min_angle = '50'
-    # max_angle = '320'
-    # min_value = '0'
-    # max_value = '300'
-    # units = 'psi'
-
-    #gauge 7
-    # min_angle = '310'
-    # max_angle = '50'
-    # min_value = '0'
-    # max_value = '30'
-    # units = 'Hg'
-
-    #gauge 4
-    # min_angle = '0'
-    # max_angle = '238'
-    # min_value = '0'
-    # max_value = '10'
-    # units = 'rpm'
-
-    #gauge 5
-    # min_angle = '45'
-    # max_angle = '310'
-    # min_value = '0'
-    # max_value = '1000'
-    #units = 'bar'
+    min_angle = raw_input('Min angle (lowest possible angle of dial) - in degrees: ') #the lowest possible angle
+    max_angle = raw_input('Max angle (highest possible angle) - in degrees: ') #highest possible angle
+    min_value = raw_input('Min value: ') #usually zero
+    max_value = raw_input('Max value: ') #maximum reading of the gauge
+    units = raw_input('Enter units: ')
 
     return min_angle, max_angle, min_value, max_value, units, x, y, r
 
-def get_current_value(img, min_angle, max_angle, min_value, max_value, x, y, r):
+def get_current_value(img, min_angle, max_angle, min_value, max_value, x, y, r, gauge_number, file_type):
 
     #for testing purposes
-    # gauge_number = 10
-    # file_type = 'jpg'
-
-    img = cv2.imread('gauge-%s.%s' % (gauge_number, file_type))
+    #img = cv2.imread('gauge-%s.%s' % (gauge_number, file_type))
 
     gray2 = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
@@ -214,7 +169,7 @@ def get_current_value(img, min_angle, max_angle, min_value, max_value, x, y, r):
                 if ((line_length > 0.5 * r) and (
                     line_length < 1.5 * r)):  # roughly checks if a line is within an acceptable range of the radius
                     final_line_list.append([x1, y1, x2, y2])
-                    print x1, y1, x2, y2
+                    #print x1, y1, x2, y2
                 else:
                     pass
 
@@ -226,8 +181,8 @@ def get_current_value(img, min_angle, max_angle, min_value, max_value, x, y, r):
     cv2.line(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
     #for testing purposes, show the line overlayed on the original image
-    cv2.imwrite('gauge-1-test.jpg', img)
-    # cv2.imwrite('gauge-%s-lines-2.%s' % (gauge_number, file_type), img)
+    #cv2.imwrite('gauge-1-test.jpg', img)
+    #cv2.imwrite('gauge-%s-lines-2.%s' % (gauge_number, file_type), img)
 
     #find the farthest point from the center to be what is used to determine the angle
     dist_pt_0 = dist_2_pts(x, y, x1, y1)
@@ -275,7 +230,7 @@ def get_current_value(img, min_angle, max_angle, min_value, max_value, x, y, r):
     return new_value
 
 def main():
-    gauge_number = 10
+    gauge_number = 1
     file_type='jpg'
 
     # name the calibration image of your gauge 'gauge-#.jpg', for example 'gauge-5.jpg'.  It's written this way so you can easily try multiple images
@@ -283,9 +238,8 @@ def main():
 
     #feed an image (or frame) to get the current value, based on the calibration, by default uses same image as calibration
     img = cv2.imread('gauge-%s.%s' % (gauge_number, file_type))
-    val = get_current_value(img, min_angle, max_angle, min_value, max_value, x, y, r)
+    val = get_current_value(img, min_angle, max_angle, min_value, max_value, x, y, r, gauge_number, file_type)
     print "Current reading: %s %s" %(val, units)
-
 
 if __name__=='__main__':
     main()

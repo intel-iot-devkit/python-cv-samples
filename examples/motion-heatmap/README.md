@@ -18,8 +18,8 @@ This sample application is useful to see patterns of movement over time.  For ex
 ```
 pip install opencv-contrib-python
 ```
-1. Download the vtest.avi video from https://github.com/opencv/opencv/blob/master/samples/data/vtest.avi and put it in the same folder as the python script.
-2. Run the python script.  You should see a diff-overlay.jpg when it's done.
+2. Download the vtest.avi video from https://github.com/opencv/opencv/blob/master/samples/data/vtest.avi and put it in the same folder as the python script.
+3. Run the python script.  You should see a diff-overlay.jpg when it's done.
 
 ![](images/diff-overlay.jpg)
 
