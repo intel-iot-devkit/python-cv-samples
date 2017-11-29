@@ -1,6 +1,6 @@
 # Motion Heatmap
 
-	This sample application is useful to see patterns of movement over time.  For example, it could be used to see the usage of entrances to a factory floor over time, or patterns of shoppers in a store.
+This sample application is useful to see patterns of movement over time.  For example, it could be used to see the usage of entrances to a factory floor over time, or patterns of shoppers in a store.
 
 ## What you’ll learn
   * background subtraction
