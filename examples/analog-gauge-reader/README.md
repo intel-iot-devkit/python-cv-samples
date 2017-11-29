@@ -18,18 +18,20 @@ calibrated values in the measurement stage to convert the angle of the dial into
 1. Take a picture of a gauge or use the gauge-1.jpg provided.  If you name it something other than gauge-1.jpg make sure to
 change that in the main() function.
 2. Run the application (download the .zip at the end of this article first) and enter the requested values, using the output file gauge-#-calibration.jpg to determine the values. Here's an example of what the calibration image looks like:
-[](/images/gauge-1-calibration.jpg)
+![](images/gauge-1-calibration.jpg)
 
 For the calibration image above, you would enter in the following values:
-[](/images/screen-prompt.jpg)
+![](images/screen-prompt.jpg)
 
 3.  The application by default reads the value of the gauge of the image you used for calibration.  For the provided image, it gives a result of 16.4 psi.  Not bad.
 
 Original image:
-[](/images/gauge-1.jpg)
+![](images/gauge-1.jpg)
 
 Found line: (not normally an output, just to show more of what's going on)
-[](/images/gauge-1-lines.jpg)
+![](images/gauge-1-lines.jpg)
+
+gauge-2.jpg is provided for the user to try.
 
 ## Get the Code
 Code is included in this folder of the repository in the .py file.
