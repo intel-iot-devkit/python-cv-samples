@@ -1,16 +1,16 @@
 # Analog Gauge Reader
 
 This sample application takes an image or frame of an analog gauge an reads the value using computer vision.
-It consists of two parts, the calibration, and the measurement.  During calibration the user gives it an image 
+It consists of two parts: the calibration, and the measurement.  During calibration, the user gives the application an image 
 of the gauge to calibrate, and it prompts the user to enter the range of values in degrees.  It then uses these 
 calibrated values in the measurement stage to convert the angle of the dial into a meaningful value.
 
-## What you’ll learn
+## What youâ€™ll learn
   * Circle detection
   * Line detection
 
 ## Gather your materials
-  *	Python 2.7 or greater
+  *	Python\* 2.7 or greater
   * OpenCV version 3.3.0 or greater
   *	A picture of a gauge to try (or you can use the sample one provided)
 
@@ -49,9 +49,7 @@ For lines (this happens in get_current_value() )
 * check if a line is within an acceptable range of the radius
 * use the first acceptable line as the dial
 
-There is a considerable amount of triginomotry involved to create the calibration image, mainly sin and cos to plot the calibration image lines and arctan to get the angle
-of the dial.  This approach sets 0/360 to be the -y axis (if the image has a cartesian grid in the middle) and it goes clock-wise. There is a slight
-modification to make the 0/360 degrees be at the -y axis, by an addition (i+9) in the calculation of p_text[i][j]. Without this +9 the 0/360 point would be on the +x axis.  So this
+There is a considerable amount of triginomotry involved to create the calibration image, mainly sin and cos to plot the calibration image lines and arctan to get the angle of the dial.  This approach sets 0/360 to be the -y axis (if the image has a cartesian grid in the middle) and it goes clock-wise. There is a slight modification to make the 0/360 degrees be at the -y axis, by an addition (i+9) in the calculation of p_text[i][j]. Without this +9 the 0/360 point would be on the +x axis.  So this
 implementation assumes the gauge is aligned in the image, but it can be adjusted by changing the value of 9 to something else.
 
 IMPORTANT NOTICE: This software is sample software. It is not designed or intended for use in any medical, life-saving or life-sustaining systems, transportation systems, nuclear systems, or for any other mission-critical application in which the failure of the system could lead to critical injury or death. The software may not be fully tested and may contain bugs or errors; it may not be intended or suitable for commercial release. No regulatory approvals for the software have been obtained, and therefore software may not be certified for use in certain countries or environments.
