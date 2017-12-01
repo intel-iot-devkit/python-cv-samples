@@ -44,7 +44,7 @@ def main():
             # motion to be picked up more, increase the value of maxValue.  To pick up the least amount of motion over time, set maxValue = 1
             thresh = 2
             maxValue = 2
-            ret, th1 = cv2.threshold(fgmask, 2, 2, cv2.THRESH_BINARY)
+            ret, th1 = cv2.threshold(fgmask, thresh, maxValue, cv2.THRESH_BINARY)
             # for testing purposes, show the threshold image
             # cv2.imwrite('diff-th1.jpg', th1)
 
