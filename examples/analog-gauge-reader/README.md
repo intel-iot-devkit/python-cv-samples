@@ -17,7 +17,7 @@ calibrated values in the measurement stage to convert the angle of the dial into
 ## Setup
 1. Take a picture of a gauge or use the gauge-1.jpg provided.  If you name it something other than gauge-1.jpg make sure to
 change that in the  `main() ` function.
-2. Run the application (download the .zip at the end of this article first) and enter the requested values, using the output file gauge-#-calibration.jpg to determine the values. Here's an example of what the calibration image looks like:  
+2. Run the application `python analog_gauge_reader.py` and enter the requested values, using the output file gauge-#-calibration.jpg to determine the values. Here's an example of what the calibration image looks like:  
 ![](images/gauge-1-calibration.jpg)
 
 For the calibration image above, you would enter in the following values:  
