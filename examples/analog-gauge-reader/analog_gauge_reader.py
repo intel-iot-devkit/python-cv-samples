@@ -5,6 +5,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
 
 import cv2
 import numpy as np
+#import paho.mqtt.client as mqtt
+import time
 
 def avg_circles(circles, b):
     avg_x=0
@@ -32,7 +34,6 @@ def calibrate_gauge(gauge_number, file_type):
         as well as the starting value (which is probably zero in most cases but it won't assume that).  It will then ask for the
         position in degrees of the largest possible value of the gauge. Finally, it will ask for the units.  This assumes that
         the gauge is linear (as most probably are).
-
         It will return the min value with angle in degrees (as a tuple), the max value with angle in degrees (as a tuple),
         and the units (as a string).
     '''
@@ -50,7 +51,6 @@ def calibrate_gauge(gauge_number, file_type):
     #restricting the search from 35-48% of the possible radii gives fairly good results across different samples.  Remember that
     #these are pixel values which correspond to the possible radii search range.
     circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 20, np.array([]), 100, 50, int(height*0.35), int(height*0.48))
-
     # average found circles, found it to be more accurate than trying to tune HoughCircles parameters to get just the right one
     a, b, c = circles.shape
     x,y,r = avg_circles(circles, b)
@@ -110,6 +110,13 @@ def calibrate_gauge(gauge_number, file_type):
     max_value = raw_input('Max value: ') #maximum reading of the gauge
     units = raw_input('Enter units: ')
 
+    #for testing purposes: hardcode and comment out raw_inputs above
+    # min_angle = 45
+    # max_angle = 320
+    # min_value = 0
+    # max_value = 200
+    # units = "PSI"
+
     return min_angle, max_angle, min_value, max_value, units, x, y, r
 
 def get_current_value(img, min_angle, max_angle, min_value, max_value, x, y, r, gauge_number, file_type):
@@ -139,46 +146,56 @@ def get_current_value(img, min_angle, max_angle, min_value, max_value, x, y, r, 
     th, dst2 = cv2.threshold(gray2, thresh, maxValue, cv2.THRESH_BINARY_INV);
 
     # found Hough Lines generally performs better without Canny / blurring, though there were a couple exceptions where it would only work with Canny / blurring
-    # dst2 = cv2.medianBlur(dst2, 5)
-    # dst2 = cv2.Canny(dst2, 50, 150)
-    # dst2 = cv2.GaussianBlur(dst2, (5, 5), 0)
+    #dst2 = cv2.medianBlur(dst2, 5)
+    #dst2 = cv2.Canny(dst2, 50, 150)
+    #dst2 = cv2.GaussianBlur(dst2, (5, 5), 0)
 
     # for testing, show image after thresholding
-    # cv2.imwrite('gauge-%s-tempdst2.%s' % (gauge_number, file_type), dst2)
+    cv2.imwrite('gauge-%s-tempdst2.%s' % (gauge_number, file_type), dst2)
 
     # find lines
-    minLineLength = 200
-    maxLineGap = 30
-    lines = cv2.HoughLinesP(dst2, 3, np.pi / 180, 100, minLineLength, maxLineGap)  # rho is set to 3 to detect more lines, easier to get more then filter them out later
+    minLineLength = 10
+    maxLineGap = 0
+    lines = cv2.HoughLinesP(image=dst2, rho=3, theta=np.pi / 180, threshold=100,minLineLength=minLineLength, maxLineGap=0)  # rho is set to 3 to detect more lines, easier to get more then filter them out later
 
     #for testing purposes, show all found lines
     # for i in range(0, len(lines)):
-    #     for x1, y1, x2, y2 in lines[i]:
-    #         cv2.line(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
-    #
-    # cv2.imwrite('gauge-%s-lines-test.%s' %(gauge_number, file_type), img)
+    #   for x1, y1, x2, y2 in lines[i]:
+    #      cv2.line(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+    #      cv2.imwrite('gauge-%s-lines-test.%s' %(gauge_number, file_type), img)
 
     # remove all lines outside a given radius
     final_line_list = []
+    #print "radius: %s" %r
+
+    diff1LowerBound = 0.15 #diff1LowerBound and diff1UpperBound determine how close the line should be from the center
+    diff1UpperBound = 0.25
+    diff2LowerBound = 0.5 #diff2LowerBound and diff2UpperBound determine how close the other point of the line should be to the outside of the gauge
+    diff2UpperBound = 1.0
     for i in range(0, len(lines)):
         for x1, y1, x2, y2 in lines[i]:
             diff1 = dist_2_pts(x, y, x1, y1)  # x, y is center of circle
             diff2 = dist_2_pts(x, y, x2, y2)  # x, y is center of circle
-            # check if line is very close to the perimeter
-            radius_cutoff = 0.9
-            if ((diff1 > radius_cutoff * r) and (diff2 > radius_cutoff * r)):
-                pass
-            else:
+            #set diff1 to be the smaller (closest to the center) of the two), makes the math easier
+            if (diff1 > diff2):
+                temp = diff1
+                diff1 = diff2
+                diff2 = temp
+            # check if line is within an acceptable range
+            if (((diff1<diff1UpperBound*r) and (diff1>diff1LowerBound*r) and (diff2<diff2UpperBound*r)) and (diff2>diff2LowerBound*r)):
                 line_length = dist_2_pts(x1, y1, x2, y2)
                 # add to final list
-                if ((line_length > 0.5 * r) and (
-                    line_length < 1.5 * r)):  # roughly checks if a line is within an acceptable range of the radius
-                    final_line_list.append([x1, y1, x2, y2])
-                    #print x1, y1, x2, y2
-                else:
-                    pass
+                final_line_list.append([x1, y1, x2, y2])
 
-    #assumes the first line is the best one
+    #testing only, show all lines after filtering
+    # for i in range(0,len(final_line_list)):
+    #     x1 = final_line_list[i][0]
+    #     y1 = final_line_list[i][1]
+    #     x2 = final_line_list[i][2]
+    #     y2 = final_line_list[i][3]
+    #     cv2.line(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+
+    # assumes the first line is the best one
     x1 = final_line_list[0][0]
     y1 = final_line_list[0][1]
     x2 = final_line_list[0][2]
@@ -187,7 +204,7 @@ def get_current_value(img, min_angle, max_angle, min_value, max_value, x, y, r, 
 
     #for testing purposes, show the line overlayed on the original image
     #cv2.imwrite('gauge-1-test.jpg', img)
-    #cv2.imwrite('gauge-%s-lines-2.%s' % (gauge_number, file_type), img)
+    cv2.imwrite('gauge-%s-lines-2.%s' % (gauge_number, file_type), img)
 
     #find the farthest point from the center to be what is used to determine the angle
     dist_pt_0 = dist_2_pts(x, y, x1, y1)
@@ -237,7 +254,6 @@ def get_current_value(img, min_angle, max_angle, min_value, max_value, x, y, r, 
 def main():
     gauge_number = 1
     file_type='jpg'
-
     # name the calibration image of your gauge 'gauge-#.jpg', for example 'gauge-5.jpg'.  It's written this way so you can easily try multiple images
     min_angle, max_angle, min_value, max_value, units, x, y, r = calibrate_gauge(gauge_number, file_type)
 
@@ -248,3 +264,4 @@ def main():
 
 if __name__=='__main__':
     main()
+   	

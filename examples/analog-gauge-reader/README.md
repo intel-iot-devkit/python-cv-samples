@@ -49,6 +49,13 @@ For lines (this happens in `get_current_value()`)
 * check if a line is within an acceptable range of the radius
 * use the first acceptable line as the dial
 
+### Optimization tips:
+If you're struggling to get your gauge to work, here are some tips:
+* Good lighting is key.  Make sure there are no shadows if possible.
+* Gauges with very thin or small dials may not work well, thicker dials work better.
+* `diff1LowerBound, diff1UpperBound, diff2LowerBound, diff2UpperBound` determine the filtering of lines that don't represent the dial.  You may need to adjust this if it's not returning any lines found.
+
+
 There is a considerable amount of trigonometry involved to create the calibration image, mainly sine and cosine to plot the calibration image lines and arctangent to get the angle of the dial.  This approach sets 0/360 to be the -y axis (if the image has a cartesian grid in the middle) and it goes clock-wise. There is a slight modification to make the 0/360 degrees be at the -y axis, by an addition (i+9) in the calculation of p_text[i][j]. Without this +9 the 0/360 point would be on the +x axis.  So this
 implementation assumes the gauge is aligned in the image, but it can be adjusted by changing the value of 9 to something else.
 
