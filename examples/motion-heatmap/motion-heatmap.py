@@ -30,7 +30,6 @@ def main():
             height, width = gray.shape[:2]
             accum_image = np.zeros((height, width), np.uint8)
             first_iteration_indicator = 0
-            previous_frame = copy.deepcopy(gray)
         else:
             ret, frame = cap.read()  # read a frame
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # convert to grayscale
@@ -56,15 +55,11 @@ def main():
             # for testing purposes, control frame by frame
             # raw_input("press any key to continue")
 
-            previous_frame = copy.deepcopy(gray)
-
         # for testing purposes, show the current frame
         # cv2.imshow('frame', gray)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-
-        previous_frame = copy.deepcopy(gray)
 
     # apply a color map
     # COLORMAP_PINK also works well, COLORMAP_BONE is acceptable if the background is dark
