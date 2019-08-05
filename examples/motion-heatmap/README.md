@@ -14,12 +14,13 @@ This sample application is useful to see movement patterns over time. For exampl
   *	The vtest.avi video from https://github.com/opencv/opencv/blob/master/samples/data/vtest.avi
 
 ## Setup
-1. You need the extra modules installed for the MOG background subtractor. This tutorial was tested on Windows\*, and the easiest way to install it was using:
+1. You need the extra modules installed for the MOG background subtractor. This tutorial was tested on Mac and Windows\*, and the easiest way to install it was using:
 ```
 pip install opencv-contrib-python
 ```
 2. Download the vtest.avi video from https://github.com/opencv/opencv/blob/master/samples/data/vtest.avi and put it in the same folder as the python script.
 3. Run the python script. You should see a diff-overlay.jpg when it's done.
+4. You can use this script to run on other videos with `python motion-heatmap.py -i /path/to/video.ext`
 
 ![](images/diff-overlay.jpg)
 
