@@ -19,7 +19,8 @@ This sample application is useful to see movement patterns over time. For exampl
 ```
 pip install opencv-contrib-python
 ```
-`NOTE`: Not required to install opencv-contrib-python, if using opencv-python v4.2.0
+`NOTE`: Not required to install opencv-contrib-python, if using opencv-python v4.2.0.
+
 2. Download the vtest.avi video from https://github.com/opencv/opencv/blob/master/samples/data/vtest.avi and put it in the same folder as the python script. `cap = cv2.VideoCapture('vtest.avi', cv2.CAP_DSHOW)`
 3. Run the python script. You should see a diff-overlay.jpg when it's done.
 
